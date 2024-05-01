@@ -1,0 +1,46 @@
+using UnityEngine;
+using System.Collections;
+using System.IO.Ports;
+
+public class Cube : MonoBehaviour
+{
+  SerialPort data_stream = new SerialPort("COM5", 9600);
+  public string receivedString;
+  public Rigidbody rb;
+  public float sens = 0.1f;
+  public float previousG; // Store previous G value
+  public float minimumGChange = 5.0f; // Minimum G change for movement
+
+  void Start()
+  {
+    data_stream.Open();
+    InvokeRepeating("Serial_Data_Reading", 0f, 0.01f); // Read data every 0.01 seconds
+  }
+
+  void Update()
+  {
+    // Directly extract X, Y, Z values within Serial_Data_Reading
+    // and apply forces if successful
+    Serial_Data_Reading();
+  }
+
+  int Serial_Data_Reading()
+  {
+    receivedString = data_stream.ReadLine();
+
+    if (!string.IsNullOrEmpty(receivedString)){
+      float[] xVal = new float[50];
+      float[] yVal = new float[50];
+      float[] zVal = new float[50];
+
+    }
+  }
+
+  bool extractData(string dataString, float[] gValues){
+    string[] datas = dataString.Split(',');
+
+  }
+
+  void arrPush()
+
+}

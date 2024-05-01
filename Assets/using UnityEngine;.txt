@@ -1,0 +1,69 @@
+using UnityEngine;
+using System.Collections;
+using System.IO.Ports;
+
+public class Cube : MonoBehaviour
+{
+    SerialPort data_stream = new SerialPort("COM5", 9600);
+    public string receivedString;
+    public Rigidbody rb;
+    public float sens = 0.1f;
+    public float G = 1.0f;
+
+    void Start()
+    {
+        data_stream.Open();
+        InvokeRepeating("Serial_Data_Reading", 0f, 0.01f); // Read data every 0.01 seconds
+    }
+
+    void Update()
+    {
+        // Directly extract X, Y, Z values within Serial_Data_Reading
+        // and apply forces if successful
+        Serial_Data_Reading();
+    }
+
+    int Serial_Data_Reading()
+    {
+        receivedString = data_stream.ReadLine();
+
+        if (!string.IsNullOrEmpty(receivedString))
+        {
+            // Extract X, Y, Z values from received string
+            float x, y, z;
+            if (TryExtractXYZ(receivedString, out x, out y, out z))
+            {
+                // Apply force based on extracted values
+                rb.AddForce(new Vector3(x * sens, y * sens, z * sens), ForceMode.VelocityChange);
+            }
+        }
+
+        return 0; // Or return a value indicating successful data extraction
+    }
+
+    bool TryExtractXYZ(string dataString, out float x, out float y, out float z)
+    {
+        string[] datas = dataString.Split(',');
+
+        if (datas.Length < 1)
+        {
+            Debug.LogError("Incomplete data received from COM5");
+            x = y = z = 0.0f;
+            return false;
+        }
+
+        try
+        {
+            x = (float.Parse(datas[0]))/G;
+            y = (float.Parse(datas[1]))/G;
+            z = (float.Parse(datas[2]))/G;
+            return true;
+        }
+        catch (System.FormatException)
+        {
+            Debug.LogError("Invalid data format received from COM5");
+            x = y = z = 0.0f;
+            return false;
+        }
+    }
+}
