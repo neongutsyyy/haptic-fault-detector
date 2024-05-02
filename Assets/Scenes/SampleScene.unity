@@ -272,8 +272,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 5990115}
-  threshold: 5
-  sensitivity: 1.1
+  threshold: 10
+  sensitivity: 0.1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
